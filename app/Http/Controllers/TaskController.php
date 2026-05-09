@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Task;
+use App\Models\User;
 class TaskController extends Controller
 {
    private $tasks = [
@@ -36,77 +37,37 @@ class TaskController extends Controller
     ]
 ];
 public function index(){
-    if (!session()->has('tasks')) {
-        session()->put('tasks', $this->tasks);
-    }
-
-   $tasksFromSession= session()->get('tasks');
-    return view("tasks.index",["tasks" =>$tasksFromSession]);
+    $tasks= Task::paginate(15);
+    return view("tasks.index",["tasks" =>$tasks]);
 }
 public function show($id){
-    $tasks = session()->get('tasks', []);
-    foreach($this->tasks as $task){
-      if($task["id"] == $id){
-        return view("tasks.show",["task" =>$task]);
-      }
-    }   
+    $task= Task::findOrFail($id);
+    return view("tasks.show",["task" =>$task]);
+    
 }
 
 public function edit($id){
-    $tasks = session()->get('tasks', []);
-    foreach($tasks as $task){
-      if($task["id"] == $id){
-        return view("tasks.edit",["task" =>$task]);
-      }
-    }   
+    $task = Task::findOrFail($id);
+    $users = User::all();
+    return view("tasks.edit", compact("task", "users"));
+    
 }
 public function create(){
-
-    return view("tasks.create");
+     $users = User::all();
+     return view("tasks.create", compact("users"));
 }
 public function store(Request $request){
-$tasks = session()->get('tasks', []);
-$request->validate([
-     'title'=>'required',
-]);
-
-    $newTask = [
-            "id" => count($tasks) + 1,
-            "title" => $request["title"],
-            "description" => $request["description"],
-            "creator" => $request["creator"],
-           "priority" => $request["priority"],
-           "status" => $request["status"],
-           "due_date"  => $request["due_date"]
-        ];
-         $tasks[] = $newTask;
-         session()->put('tasks', $tasks);
+    $task=Task::create($request->except("_token"));
         return redirect()->route("tasks.index");
 }
 public function update(Request $request,$id){
-    $tasks = session()->get('tasks', []);
-   foreach($tasks as &$task){
-      if($task["id"] == $id){
-           $task[ "title"] = $request["title"];
-            $task["description"]= $request["description"];
-            $task["creator"] = $request["creator"];
-           $task["priority"] = $request["priority"];
-           $task["status"] = $request["status"];
-           $task["due_date"]  = $request["due_date"];
-           break;
-        
-      }
-   }
-     session()->put('tasks', $tasks);
+$task=Task::findOrFail($id); 
+ $task->update($request->except("_token", "_method"));
      return redirect()->route("tasks.index");
 }
 public function destroy($id){
-    $tasks = session()->get('tasks', []);
-    $tasks = array_filter($tasks, function($task) use ($id) {
-        return $task['id'] != $id;
-    });
-
-    session()->put('tasks', $tasks);
+    $task=Task::findOrFail($id); 
+ $task->delete();
     return redirect()->route("tasks.index");
 }   
 }

@@ -5,7 +5,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get("/task", [TaskController::class, "index"])->name("tasks.index");
+Route::get("/taskk", [TaskController::class, "index"])->name("tasks.index");
 Route::get("/tasks/create", [TaskController::class, "create"])->name("tasks.create"); 
 Route::post("/tasks", [TaskController::class, "store"])->name("tasks.store");
 Route::get("/tasks/{task}", [TaskController::class, "show"] )->name("tasks.show");

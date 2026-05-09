@@ -37,8 +37,13 @@
                     <div class="row">
                         <!-- Creator -->
                         <div class="col-md-6 mb-3">
-                            <label for="creator" class="form-label fw-semibold">Assignee / Creator</label>
-                            <input type="text" class="form-control" id="creator" name="creator" placeholder="Enter name">
+                            <label for="creator" class="form-label fw-semibold"> Creator</label>
+                            <!-- <input type="text" class="form-control" id="creator" name="creator" placeholder="Enter name"> -->
+                             <select name="user_id" class="form-control">
+                                      @foreach($users as $user)
+                                           <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach
+                                    </select>
                         </div>
 
                         <!-- Due Date -->
@@ -64,7 +69,7 @@
                             <label for="status" class="form-label fw-semibold">Status</label>
                             <select class="form-select" name="status" id="status">
                                 <option value="Pending">Pending</option>
-                                <option value="In Progress">In Progress</option>
+                                <option value="in_progress">in_progress</option>
                                 <option value="Completed">Completed</option>
                             </select>
                         </div>
@@ -72,8 +77,11 @@
 
                     <!-- Action Buttons -->
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        <button type="reset" class="btn btn-light px-4">Reset</button>
-                        <button type="submit" class="btn btn-primary px-5 shadow-sm">Save Task</button>
+                        <!-- <button type="reset" class="btn btn-light px-4">Reset</button>
+
+                        <button type="submit" class="btn btn-primary px-5 shadow-sm">Save Task</button> -->
+                        < x-button type="light">Reset</ x-button>
+                        < x-button type="primary">Save Task</ x-button>
                     </div>
                 </form>
             </div>

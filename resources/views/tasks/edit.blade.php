@@ -10,56 +10,67 @@
             <li class="breadcrumb-item active" aria-current="page">Edit Task</li>
         </ol>
     </nav>
-    <h1 class="fw-bold text-primary">Edit Task: <span class="text-dark">{{ $task['title'] }}</span></h1>
+    <h1 class="fw-bold text-primary">Edit Task: <span class="text-dark">{{ $task->title }}</span></h1>
 </div>
 
 <div class="row">
     <div class="col-lg-8">
         <div class="card shadow-sm border-0">
             <div class="card-body p-4">
-                <form method="POST" action="{{ route('tasks.update', $task['id']) }}">
+                <form method="POST" action="{{ route('tasks.update', $task->id) }}">
                     @csrf
                     @method('PUT')
 
                     <div class="mb-3">
                         <label for="title" class="form-label fw-semibold">Title</label>
                         <input type="text" class="form-control" name="title" id="title" 
-                               placeholder="Enter task title" value="{{ $task['title'] }}">
+                               placeholder="Enter task title" value="{{ $task->title }}">
                     </div>
 
                     <div class="mb-3">
                         <label for="description" class="form-label fw-semibold">Description</label>
                         <textarea class="form-control" name="description" id="description" rows="4" 
-                                  placeholder="Enter task description">{{ $task['description'] }}</textarea>
+                                  placeholder="Enter task description">{{ $task->description }}</textarea>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="creator" class="form-label fw-semibold">Creator</label>
-                            <input type="text" class="form-control" id="creator" name="creator" 
-                                   value="{{ $task['creator'] }}">
+                            <label for="user_id" class="form-label fw-semibold">Creator</label>
+                            <select name="user_id" id="user_id" class="form-select">
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}" {{ $task->user_id == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="due_date" class="form-label fw-semibold">Due Date</label>
                             <input type="date" class="form-control" id="due_date" name="due_date" 
-                                   value="{{ $task['due_date'] }}">
+                                   value="{{ $task->due_date }}">
                         </div>
                     </div>
-                     <div class="row">
+
+                    <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="priority" class="form-label fw-semibold">Priority</label>
-                            <input type="text" class="form-control" id="priority" name="priority" 
-                                   value="{{ $task['priority'] }}">
+                            <select name="priority" id="priority" class="form-select">
+                                <option value="low" {{ $task->priority == 'low' ? 'selected' : '' }}>Low</option>
+                                <option value="medium" {{ $task->priority == 'medium' ? 'selected' : '' }}>Medium</option>
+                                <option value="high" {{ $task->priority == 'high' ? 'selected' : '' }}>High</option>
+                            </select>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="status" class="form-label fw-semibold">Status</label>
-                            <input type="text" class="form-control" id="status" name="status" 
-                                   value="{{ $task['status'] }}">
+                            <select name="status" id="status" class="form-select">
+                                <option value="pending" {{ $task->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="completed" {{ $task->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                            </select>
                         </div>
                     </div>
 
                     <div class="d-flex gap-2 mt-3">
-                        <button type="submit" class="btn btn-primary px-4 shadow-sm">Update Task</button>
+                        <button type="submit" class="btn btn-primary px-4">Update Task</button>
                         <a href="{{ route('tasks.index') }}" class="btn btn-outline-secondary px-4">Cancel</a>
                     </div>
                 </form>
@@ -67,7 +78,6 @@
         </div>
     </div>
 
-    <!-- Help Sidebar -->
     <div class="col-lg-4">
         <div class="card bg-light border-0 shadow-sm">
             <div class="card-body">
