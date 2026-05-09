@@ -23,15 +23,18 @@
                         <input type="text" class="form-control px-3 @error('title') is-invalid @enderror" name="title" id="title" placeholder="e.g. Finish Laravel Project" >
                         <!-- lw tman elclass =form-control px-3 lw f error(moshkla f elvalidation) elclass =form-control px-3 is-invalid 
                          w lw f error ezhr elmessage btb2a mn laravel gahza -->
-                        @error('title') 
-                        {{ $message}}
+                        @error('title')
+                          <p>{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Description -->
                     <div class="mb-3">
                         <label for="description" class="form-label fw-semibold">Description</label>
-                        <textarea class="form-control px-3" name="description" id="description" rows="4" placeholder="Describe what needs to be done..."></textarea>
+                        <textarea class="form-control px-3 @error('description') is-invalid @enderror" name="description" id="description" rows="4" placeholder="Describe what needs to be done..."></textarea>
+                        @error('description')
+                          <p>{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="row">
@@ -39,17 +42,23 @@
                         <div class="col-md-6 mb-3">
                             <label for="creator" class="form-label fw-semibold"> Creator</label>
                             <!-- <input type="text" class="form-control" id="creator" name="creator" placeholder="Enter name"> -->
-                             <select name="user_id" class="form-control">
+                             <select name="user_id" class="form-control @error('user_id') is-invalid @enderror">
                                       @foreach($users as $user)
-                                           <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                           <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : ''}}>{{ $user->name }}</option>
                                         @endforeach
                                     </select>
+                                     @error('user_id')
+                             <p>{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- Due Date -->
                         <div class="col-md-6 mb-3">
                             <label for="due_date" class="form-label fw-semibold">Due Date</label>
                             <input type="date" class="form-control" id="due_date" name="due_date">
+                             @error('due_date')
+                          <p>{{ $message }}</p>
+                        @enderror
                         </div>
                     </div>
 
@@ -62,6 +71,9 @@
                                 <option value="Medium" selected>Medium</option>
                                 <option value="High">High</option>
                             </select>
+                            @error('priority')
+                             <p>{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- Status -->
@@ -72,9 +84,27 @@
                                 <option value="in_progress">in_progress</option>
                                 <option value="Completed">Completed</option>
                             </select>
+                             @error('status')
+                             <p>{{ $message }}</p>
+                            @enderror
                         </div>
-                    </div>
 
+                    </div>
+                    <div>
+                        <!-- Assignee -->
+                        <div class="col-md-6 mb-3">
+                            <label for="assignee" class="form-label fw-semibold">Assignee</label>
+                            <!-- <input type="text" class="form-control" id="assignee" name="assignee" placeholder="Enter name"> -->
+                             <select name="assignee_id" class="form-control">
+                                      @foreach($users as $user)
+                                           <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach
+                                    </select>
+                                     @error('assignee_id')
+                             <p>{{ $message }}</p>
+                            @enderror
+                        </div>
+                    <div>
                     <!-- Action Buttons -->
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                         <!-- <button type="reset" class="btn btn-light px-4">Reset</button>

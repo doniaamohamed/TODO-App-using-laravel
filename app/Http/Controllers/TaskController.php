@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\User;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 class TaskController extends Controller
 {
    private $tasks = [
@@ -37,12 +39,15 @@ class TaskController extends Controller
     ]
 ];
 public function index(){
-    $tasks= Task::paginate(15);
+    $tasks= Task::withTrashed()->paginate(15);
     return view("tasks.index",["tasks" =>$tasks]);
 }
-public function show($id){
-    $task= Task::findOrFail($id);
-    return view("tasks.show",["task" =>$task]);
+public function show(Task $task){
+    // $task= Task::findOrFail($id);
+    // return view("tasks.show",["task" =>$task]);
+
+     $task->load([ 'assignee', 'comments.user','creator']);
+    return view('tasks.show', compact('task'));
     
 }
 
@@ -56,13 +61,14 @@ public function create(){
      $users = User::all();
      return view("tasks.create", compact("users"));
 }
-public function store(Request $request){
-    $task=Task::create($request->except("_token"));
+public function store(StorePostRequest $request){
+
+    $task=Task::create($request->validated());
         return redirect()->route("tasks.index");
 }
-public function update(Request $request,$id){
+public function update(UpdatePostRequest $request,$id){
 $task=Task::findOrFail($id); 
- $task->update($request->except("_token", "_method"));
+ $task->update($request->validated());
      return redirect()->route("tasks.index");
 }
 public function destroy($id){
@@ -70,5 +76,12 @@ public function destroy($id){
  $task->delete();
     return redirect()->route("tasks.index");
 }   
+public function restore($id)
+{
+    $task = Task::withTrashed()->findOrFail($id);
+    $task->restore(); 
+
+    return redirect()->route('tasks.index')->with('success', 'Task restored successfully!');
+}
 }
 

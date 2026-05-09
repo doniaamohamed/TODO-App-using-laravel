@@ -22,6 +22,7 @@
                             <th>Due Date</th>
                             <th>Created At</th>
                             <th class="text-center">Actions</th>
+                    
                         </tr>
                     </thead>
                     <tbody>
@@ -31,7 +32,8 @@
                             <td>
                                 <span class="fw-semibold text-dark">{{ $task->title}}</span>
                             </td>
-                            <!-- <td>{{ $task->creator }}</td> -->
+                            <!-- <td>{{ $task->user?->name }}</td> -->
+
                             <td>
                                 <span class="badge {{ $task->priority== 'High' ? 'bg-danger' : ($task->priority == 'Medium' ? 'bg-warning text-dark' : 'bg-info') }}">
                                     {{ $task->priority }}
@@ -46,6 +48,13 @@
                             <td>{{ $task->created_at->diffForHumans() }}</td>
                             <td class="text-center">
                                 <div class="btn-group gap-2">
+                                    @if($task->trashed())
+                                        <form action="{{ route('tasks.restore', $task->id) }}" method="POST" style="display:inline-block">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-sm btn-outline-success rounded">Restore</button>
+                                        </form>
+                                        @else
                                     <a href="{{ route('tasks.show', ['task' => $task->id]) }}" class="btn btn-sm btn-outline-success rounded">View</a>
                                     <a href="{{ route('tasks.edit', ['task' => $task->id]) }}" class="btn btn-sm btn-outline-warning rounded">Edit</a>
                                     
@@ -56,6 +65,7 @@
                                         <button type="submit" class="btn btn-sm btn-outline-danger rounded" onclick="return confirm('Are you sure?')">Delete</button>
                                          <!-- <x-button type="danger">Delete</x-button> -->
                                     </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
