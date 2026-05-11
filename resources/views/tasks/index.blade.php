@@ -1,9 +1,14 @@
-@extends("layouts.app")
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('All Tasks') }}
+        </h2>
+    </x-slot>
 
-@section("page title") Tasks @endsection
-
-@section("content")
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="card shadow-sm border-0 p-4">
+        
+        <table class="table">
+            <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="fw-bold text-primary">Task List</h1>
         <a href="{{ route('tasks.create') }}" class="btn btn-primary px-4 shadow-sm">Create New Task</a>
     </div>
@@ -16,7 +21,7 @@
                         <tr>
                             <th class="ps-4">#</th>
                             <th>Title</th>
-                            <!-- <th>Creator</th> -->
+                            <th>Slug</th>
                             <th>Priority</th>
                             <th>Status</th>
                             <th>Due Date</th>
@@ -32,7 +37,7 @@
                             <td>
                                 <span class="fw-semibold text-dark">{{ $task->title}}</span>
                             </td>
-                            <!-- <td>{{ $task->user?->name }}</td> -->
+                           <td><span class="badge bg-secondary">{{ $task->slug }}</span></td>
 
                             <td>
                                 <span class="badge {{ $task->priority== 'High' ? 'bg-danger' : ($task->priority == 'Medium' ? 'bg-warning text-dark' : 'bg-info') }}">
@@ -79,4 +84,9 @@
                          </div>
         </div>
     </div>
-@endsection
+
+        </table>
+
+    </div>
+</x-app-layout>
+   

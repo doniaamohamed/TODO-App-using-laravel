@@ -1,8 +1,14 @@
-@extends("layouts.app")
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('All Tasks') }}
+        </h2>
+    </x-slot>
 
-@section("page title", "Edit Task")
-
-@section("content")
+    <div class="card shadow-sm border-0 p-4">
+        
+        <table class="table">
+           
 <div class="mb-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -25,8 +31,7 @@
     <div class="col-lg-8">
         <div class="card shadow-sm border-0">
             <div class="card-body p-4">
-                <!-- الـ Action والـ Method -->
-                <form method="POST" action="{{ route('tasks.update', $task->id) }}">
+                <form method="POST" action="{{ route('tasks.update', $task->id) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -124,6 +129,11 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="images" class="form-label fw-semibold">Task Images</label>
+                        <input type="file" name="images[]" multiple class="form-control" accept="image/png, image/jpeg">
+                    </div>
                     <div class="d-flex gap-2 mt-3">
                         <button type="submit" class="btn btn-primary px-4">Update Task</button>
                         <a href="{{ route('tasks.index') }}" class="btn btn-outline-secondary px-4">Cancel</a>
@@ -147,4 +157,7 @@
         </div>
     </div>
 </div>
-@endsection
+ </table>
+
+    </div>
+</x-app-layout>

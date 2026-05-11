@@ -1,8 +1,13 @@
-@extends("layouts.app")
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('All Tasks') }}
+        </h2>
+    </x-slot>
 
-@section("page title", "Task Details")
-
-@section("content")
+    <div class="card shadow-sm border-0 p-4">
+        
+        <table class="table">
     <div class="mb-4">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -60,6 +65,14 @@
                             <span class="text-muted small">
                                 <i class="bi bi-clock me-1"></i> {{ $task->created_at->diffForHumans() }}
                             </span>
+                        </div>
+                        <div class="col-12">
+                            <label class="text-muted small fw-bold text-uppercase d-block">Task Images</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach($task->images as $image)
+                                    <img src="{{ $image->image_url }}" width="300" class="img-fluid rounded ">
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -146,4 +159,7 @@
             </div>
         </div>
     </div>
-@endsection
+ </table>
+
+    </div>
+</x-app-layout>

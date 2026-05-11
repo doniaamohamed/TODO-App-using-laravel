@@ -7,6 +7,7 @@ use App\Models\Task;
 use App\Models\User;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Support\Facades\Storage;
 class TaskController extends Controller
 {
    private $tasks = [
@@ -62,17 +63,53 @@ public function create(){
      return view("tasks.create", compact("users"));
 }
 public function store(StorePostRequest $request){
+$request->validate([
+        'images.*' => 'image|mimes:jpg,png|max:2048', 
+    ]);
 
-    $task=Task::create($request->validated());
+    $task = Task::create($request->all());
+
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $file) {
+            $path = $file->store('tasks', 'public');
+            $task->images()->create(['path' => $path]);
+        }
+    }
         return redirect()->route("tasks.index");
 }
-public function update(UpdatePostRequest $request,$id){
-$task=Task::findOrFail($id); 
- $task->update($request->validated());
-     return redirect()->route("tasks.index");
+// public function update(UpdatePostRequest $request,$id){
+// $task=Task::findOrFail($id); 
+//  $task->update($request->validated());
+//      return redirect()->route("tasks.index");
+// }
+public function update(Request $request, Task $task)
+{
+    $request->validate([
+        'title' => 'required',
+        'images.*' => 'image|mimes:jpg,png|max:2048', 
+    ]);
+
+    $task->update($request->only('title', 'description', 'status'));
+
+    if ($request->hasFile('images')) {
+        foreach ($task->images as $image) {
+            Storage::disk('public')->delete($image->path);
+        }
+        $task->images()->delete();
+
+        foreach ($request->file('images') as $file) {
+            $path = $file->store('tasks', 'public');
+            $task->images()->create(['path' => $path]);
+        }
+    }
+
+    return redirect()->route('tasks.index');
 }
 public function destroy($id){
     $task=Task::findOrFail($id); 
+    foreach ($task->images as $image) {
+        Storage::disk('public')->delete($image->path);
+    }
  $task->delete();
     return redirect()->route("tasks.index");
 }   

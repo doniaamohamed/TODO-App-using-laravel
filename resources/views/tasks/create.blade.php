@@ -1,8 +1,13 @@
-@extends("layouts.app")
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('All Tasks') }}
+        </h2>
+    </x-slot>
 
-@section("page title", "Create New Task")
-
-@section("content")
+    <div class="card shadow-sm border-0 p-4">
+        
+        <table class="table">
 <div class="row justify-content-center">
     <div class="col-md-8">
         <!-- Header -->
@@ -14,7 +19,7 @@
         <!-- Form Card -->
         <div class="card shadow-sm border-0">
             <div class="card-body p-4">
-                <form method="POST" action="{{ route('tasks.store') }}">
+                <form method="POST" action="{{ route('tasks.store') }}" enctype="multipart/form-data">
                     @csrf
                     
                     <!-- Title -->
@@ -104,7 +109,13 @@
                              <p>{{ $message }}</p>
                             @enderror
                         </div>
-                    <div>
+                        <div class="col-md-6 mb-3">
+                            
+                        <label for="images" class="form-label fw-semibold">Task Images</label>
+                        <input type="file" name="images[]" multiple class="form-control" accept="image/png, image/jpeg">
+                    </div>
+
+</div>
                     <!-- Action Buttons -->
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                         <!-- <button type="reset" class="btn btn-light px-4">Reset</button>
@@ -118,4 +129,8 @@
         </div>
     </div>
 </div>
-@endsection
+
+ </table>
+
+    </div>
+</x-app-layout>
