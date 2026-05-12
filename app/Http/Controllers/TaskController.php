@@ -44,10 +44,7 @@ public function index(){
     return view("tasks.index",["tasks" =>$tasks]);
 }
 public function show(Task $task){
-    // $task= Task::findOrFail($id);
-    // return view("tasks.show",["task" =>$task]);
-
-     $task->load([ 'assignee', 'comments.user','creator']);
+    $task->load([ 'assignee', 'comments.user','creator']);
     return view('tasks.show', compact('task'));
     
 }
@@ -59,8 +56,8 @@ public function edit($id){
     
 }
 public function create(){
-     $users = User::all();
-     return view("tasks.create", compact("users"));
+    $users = User::all();
+    return view("tasks.create", compact("users"));
 }
 public function store(StorePostRequest $request){
 $request->validate([
@@ -75,17 +72,12 @@ $request->validate([
             $task->images()->create(['path' => $path]);
         }
     }
-        return redirect()->route("tasks.index");
+    return redirect()->route("tasks.index");
 }
-// public function update(UpdatePostRequest $request,$id){
-// $task=Task::findOrFail($id); 
-//  $task->update($request->validated());
-//      return redirect()->route("tasks.index");
-// }
+
 public function update(Request $request, Task $task)
 {
     $request->validate([
-        'title' => 'required',
         'images.*' => 'image|mimes:jpg,png|max:2048', 
     ]);
 
@@ -110,7 +102,7 @@ public function destroy($id){
     foreach ($task->images as $image) {
         Storage::disk('public')->delete($image->path);
     }
- $task->delete();
+    $task->delete();
     return redirect()->route("tasks.index");
 }   
 public function restore($id)
